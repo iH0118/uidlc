@@ -28,11 +28,40 @@ uidl_parse_uint16 (
 );
 
 uidlc_return_t
+uidl_parse_float (
+    char **token,
+    float *target
+);
+
+uidlc_return_t
 uidl_parse_string (
     char **token,
     char **target,
     uint16_t *len
 );
 
+uidlc_return_t
+uidl_parse_enum_array_alignment (
+    char **token,
+    enum8_t *target
+);
+
+uidlc_return_t
+uidl_parse_enum_reflow_direction (
+    char **token,
+    enum8_t *target
+);
+
+uidlc_return_t
+uidl_parse_enum_text_alignment_x (
+    char **token,
+    enum8_t *target
+);
+
+uidlc_return_t
+uidl_parse_enum_text_alignment_y (
+    char **token,
+    enum8_t *target
+);
 
 #endif

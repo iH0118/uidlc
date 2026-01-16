@@ -1,0 +1,103 @@
+#include <stdlib.h>
+#include <ultk/ultk_uidl_uib.h>
+#include "w_container_label.h"
+#include "uidl_parser.h"
+#include "uidl_scalars.h"
+#include "uidl_widget.h"
+#include "uidlc.h"
+
+uidlc_return_t
+uidl_parse_w_container_label (
+    char **token,
+    uib_widget_struct_t *widget
+)
+{
+    uidlc_return_t status = UIDLC_ERROR;
+
+    /* optional elements */
+    widget->data.container_label.label_size = 0;
+    widget->data.container_label.label = NULL;
+    widget->data.container_label.label_align = ULTK_TEXT_ALIGN_HCENTER;
+    widget->data.container_label.border = 0;
+    
+    if (!uidl_conditional_advance(token, "{"))
+    {
+        uidlc_syntax_error(*token);
+    }
+    
+    if (uidl_conditional_advance(token, "}"))
+    {
+        uidlc_syntax_error(*token);
+    }
+    
+    widget->data.container_label.child = malloc(sizeof(uib_widget_struct_t));
+
+    if (!widget->data.container.child)
+    {
+        return UIDLC_ERROR_ALLOCATION_FAILED;
+    }
+    
+    while (1)
+    {
+        if (uidl_cond_adv_col(token, "id"))
+        {
+            status = uidl_parse_string(
+                token,
+                &widget->id,
+                &widget->id_size
+            );
+        }
+
+        if (uidl_cond_adv_col(token, "label"))
+        {
+            status = uidl_parse_string(
+                token,
+                &widget->data.container_label.label,
+                &widget->data.container_label.label_size
+            );
+        }
+
+        if (uidl_cond_adv_col(token, "label_align"))
+        {
+            status = uidl_parse_enum_text_alignment_x(
+                token, 
+                &widget->data.container_label.label_align
+            );
+        }
+
+        if (uidl_cond_adv_col(token, "border"))
+        {
+            status = uidl_parse_bool(
+                token, 
+                &widget->data.container_label.border
+            );
+        }
+
+        if (uidl_cond_adv_col(token, "w_child"))
+        {
+            status = uidl_parse_widget(
+                token, 
+                widget->data.container_label.child
+            );
+        }
+
+        if (status != UIDLC_SUCCESS)
+        {
+            return status;
+        }
+
+        if (uidl_conditional_advance(token, ","))
+        {
+            continue;
+        }
+
+        if (uidl_conditional_advance(token, "}"))
+        {
+            break;
+        }
+
+        uidlc_syntax_error(*token);
+    }
+
+    return UIDLC_SUCCESS;
+}

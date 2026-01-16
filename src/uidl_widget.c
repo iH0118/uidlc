@@ -3,6 +3,11 @@
 #include "uidl_widget.h"
 #include "uidl_parser.h"
 #include "w_array_static.h"
+#include "w_array_dynamic.h"
+#include "w_button.h"
+#include "w_checkbox.h"
+#include "w_container.h"
+#include "w_container_label.h"
 
 uidlc_return_t
 uidl_parse_widget (
@@ -25,6 +30,36 @@ uidl_parse_widget (
     {
         widget->widget_type = ULTK_WIDGET_ARRAY_STATIC;
         status = uidl_parse_w_array_static(token, widget);
+    }
+
+    else if (uidl_conditional_advance(token, "array_dynamic"))
+    {
+        widget->widget_type = ULTK_WIDGET_ARRAY_DYNAMIC;
+        status = uidl_parse_w_array_dynamic(token, widget);
+    }
+
+    else if (uidl_conditional_advance(token, "button"))
+    {
+        widget->widget_type = ULTK_WIDGET_BUTTON;
+        status = uidl_parse_w_button(token, widget);
+    }
+
+    else if (uidl_conditional_advance(token, "checkbox"))
+    {
+        widget->widget_type = ULTK_WIDGET_CHECKBOX;
+        status = uidl_parse_w_checkbox(token, widget);
+    }
+
+    else if (uidl_conditional_advance(token, "container"))
+    {
+        widget->widget_type = ULTK_WIDGET_CONTAINER;
+        status = uidl_parse_w_container(token, widget);
+    }
+
+    else if (uidl_conditional_advance(token, "container_label"))
+    {
+        widget->widget_type = ULTK_WIDGET_CONTAINER_LABEL;
+        status = uidl_parse_w_container_label(token, widget);
     }
 
     //add more widget types here

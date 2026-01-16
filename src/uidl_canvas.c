@@ -14,14 +14,17 @@ uidl_parse_canvas (
 {
     uidlc_return_t status = UIDLC_ERROR;
 
+    /* required elements */
     canvas->canvas_type = ULTK_CANVAS_NULL;
     canvas->id_size = 0;
     canvas->id = NULL;
+    canvas->w_top = NULL;
+    
+    /* optional elements */
     canvas->title_size = 0;
     canvas->title = NULL;
     canvas->size_x = 0;
     canvas->size_y = 0;
-    canvas->w_top = NULL;
 
     if (uidl_conditional_advance(token, "application"))
     {

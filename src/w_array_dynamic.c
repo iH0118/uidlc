@@ -1,6 +1,5 @@
 #include <stdlib.h>
-#include <ultk/ultk_uidl_uib.h>
-#include "w_array_static.h"
+#include "w_array_dynamic.h"
 #include "uib_structs.h"
 #include "uidl_parser.h"
 #include "uidl_scalars.h"
@@ -8,7 +7,7 @@
 #include "uidlc.h"
 
 uidlc_return_t
-uidl_parse_w_array_static (
+uidl_parse_w_array_dynamic (
     char **token,
     uib_widget_struct_t *widget
 )
@@ -16,15 +15,14 @@ uidl_parse_w_array_static (
     uidlc_return_t status = UIDLC_ERROR;
 
     /* required elements */
-    widget->data.array_static.num_rows = 0;
-    widget->data.array_static.num_cols = 0;
-    widget->data.array_static.num_children = 0;
-    widget->data.array_static.children = NULL;
-    
+    widget->data.array_dynamic.num_children = 0;
+    widget->data.array_dynamic.children = NULL;
+
     /* optional elements */
-    widget->data.array_static.alignment = ULTK_ARRAY_ALIGN_FILL;
-    widget->data.array_static.scrollable_x = 1;
-    widget->data.array_static.scrollable_y = 1;
+    widget->data.array_dynamic.alignment = ULTK_ARRAY_ALIGN_FILL;
+    widget->data.array_dynamic.keep_grid = 0;
+    widget->data.array_dynamic.reflow_direction = ULTK_REFLOW_HORIZONTAL;
+    widget->data.array_dynamic.max_reflow_sections = 0;
 
     if (!uidl_conditional_advance(token, "{"))
     {
@@ -47,43 +45,35 @@ uidl_parse_w_array_static (
             );
         }
 
-        if (uidl_cond_adv_col(token, "num_rows"))
-        {
-            status = uidl_parse_uint8(
-                token,
-                &widget->data.array_static.num_rows
-            );
-        }
-
-        if (uidl_cond_adv_col(token, "num_cols"))
-        {
-            status = uidl_parse_uint8(
-                token,
-                &widget->data.array_static.num_cols
-            );
-        }
-
         if (uidl_cond_adv_col(token, "alignment"))
         {
             status = uidl_parse_enum_array_alignment(
                 token,
-                &widget->data.array_static.alignment
+                &widget->data.array_dynamic.alignment
             );
         }
 
-        if (uidl_cond_adv_col(token, "scrollable_x"))
+        if (uidl_cond_adv_col(token, "keep_grid"))
         {
             status = uidl_parse_bool(
                 token,  
-                &widget->data.array_static.scrollable_x  
+                &widget->data.array_dynamic.keep_grid  
             );
         }
 
-        if (uidl_cond_adv_col(token, "scrollable_y"))
+        if (uidl_cond_adv_col(token, "reflow_direction"))
         {
-            status = uidl_parse_bool(
-                token,  
-                &widget->data.array_static.scrollable_y  
+            status = uidl_parse_enum_reflow_direction(
+                token,
+                &widget->data.array_dynamic.reflow_direction
+            );
+        }
+
+        if (uidl_cond_adv_col(token, "max_reflow_sections"))
+        {
+            status = uidl_parse_uint8(
+                token,
+                &widget->data.array_dynamic.max_reflow_sections  
             );
         }
 
@@ -114,10 +104,8 @@ uidl_parse_w_array_static (
         uidlc_syntax_error(*token);
     }
 
-    if (widget->data.array_static.num_rows == 0 ||
-        widget->data.array_static.num_cols == 0 ||
-        widget->data.array_static.num_children == 0 ||
-        widget->data.array_static.children == NULL)
+    if (widget->data.array_dynamic.num_children == 0 ||
+        widget->data.array_dynamic.children == NULL)
     {
         return UIDLC_ERROR_MISSING_ELEMENT;
     }

@@ -14,7 +14,6 @@ typedef struct uib_w_data_checkbox        uib_w_data_checkbox_t;
 typedef struct uib_w_data_container       uib_w_data_container_t;
 typedef struct uib_w_data_container_label uib_w_data_container_label_t;
 
-
 struct uib_w_data_array_static {
     uint8_t num_rows;
     uint8_t num_cols;

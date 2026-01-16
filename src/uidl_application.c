@@ -3,6 +3,7 @@
 #include "uidl_parser.h"
 #include "uidl_scalars.h"
 #include "uidl_canvas.h"
+#include "uidlc.h"
 
 uidlc_return_t
 uidl_parse_metadata (
@@ -142,6 +143,12 @@ uidl_parse_application_struct (
         }
 
         uidlc_syntax_error(*token);
+    }
+
+    if ((*application)->num_canvas == 0 ||
+        (*application)->canvas == NULL)
+    {
+        return UIDLC_ERROR_MISSING_ELEMENT;
     }
 
     return UIDLC_SUCCESS;
