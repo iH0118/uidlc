@@ -200,7 +200,7 @@ uidl_parse_enum_array_alignment (
 }
 
 uidlc_return_t
-uidl_parse_enum_reflow_direcction (
+uidl_parse_enum_reflow_direction (
     char **token,
     enum8_t *target
 )

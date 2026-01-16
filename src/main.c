@@ -38,7 +38,7 @@ main (
 
     if (optind >= argc)
     {
-        fputs("eror: missing input file\n", stderr);
+        fputs("error: missing input file\n", stderr);
         return 1;
     }
 

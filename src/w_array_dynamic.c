@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <ultk/ultk_uidl_uib.h>
 #include "w_array_dynamic.h"
 #include "uib_structs.h"
 #include "uidl_parser.h"
