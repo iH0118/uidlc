@@ -50,16 +50,16 @@ uidl_parse_widget (
         status = uidl_parse_w_checkbox(token, widget);
     }
 
-    else if (uidl_conditional_advance(token, "container"))
-    {
-        widget->widget_type = ULTK_WIDGET_CONTAINER;
-        status = uidl_parse_w_container(token, widget);
-    }
-
     else if (uidl_conditional_advance(token, "container_label"))
     {
         widget->widget_type = ULTK_WIDGET_CONTAINER_LABEL;
         status = uidl_parse_w_container_label(token, widget);
+    }
+
+    else if (uidl_conditional_advance(token, "container"))
+    {
+        widget->widget_type = ULTK_WIDGET_CONTAINER;
+        status = uidl_parse_w_container(token, widget);
     }
 
     //add more widget types here

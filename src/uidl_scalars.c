@@ -35,7 +35,7 @@ uidl_parse_int (
     int *target
 )
 {
-    int len = strcspn(*token, " \f\n\r\t\v");
+    int len = strcspn(*token, " \f\n\r\t\v,#}]");
     char *buf = malloc(len + 1);
 
     if (!buf)
@@ -50,7 +50,7 @@ uidl_parse_int (
 
     free(buf);
 
-    *token += len;
+    *token = uidl_parser_skip(*token + len);
 
     return UIDLC_SUCCESS;
 }
@@ -61,7 +61,7 @@ uidl_parse_uint8 (
     uint8_t *target
 )
 {
-    int len = strcspn(*token, " \f\n\r\t\v");
+    int len = strcspn(*token, " \f\n\r\t\v,#}]");
     char *buf = malloc(len + 1);
 
     if (!buf)
@@ -76,7 +76,7 @@ uidl_parse_uint8 (
 
     free(buf);
 
-    *token += len;
+    *token = uidl_parser_skip(*token + len);
 
     return UIDLC_SUCCESS;
 }
@@ -87,7 +87,7 @@ uidl_parse_uint16 (
     uint16_t *target
 )
 {
-    int len = strcspn(*token, " \f\n\r\t\v");
+    int len = strcspn(*token, " \f\n\r\t\v,#}]");
     char *buf = malloc(len + 1);
 
     if (!buf)
@@ -102,7 +102,7 @@ uidl_parse_uint16 (
 
     free(buf);
 
-    *token += len;
+    *token = uidl_parser_skip(*token + len);
 
     return UIDLC_SUCCESS;
 }
@@ -113,7 +113,7 @@ uidl_parse_float (
     float *target
 )
 {
-    int len = strcspn(*token, " \f\n\r\t\v");
+    int len = strcspn(*token, " \f\n\r\t\v,#}]");
     char *buf = malloc(len + 1);
 
     if (!buf)
@@ -128,7 +128,7 @@ uidl_parse_float (
 
     free(buf);
 
-    *token += len;
+    *token = uidl_parser_skip(*token + len);
 
     return UIDLC_SUCCESS;
 }

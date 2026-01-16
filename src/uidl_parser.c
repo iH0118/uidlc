@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <string.h>
 #include "uidl_parser.h"
 
@@ -6,7 +7,7 @@ uidl_parser_skip (
     char *token
 )
 {
-    int wslen = strspn(token, " \f\n\r\t\v");
+    size_t wslen = strspn(token, " \f\n\r\t\v");
 
     if (token[wslen] == '#')
     {
@@ -22,7 +23,7 @@ uidl_conditional_advance (
     const char *target
 )
 {
-    int target_len = strlen(target);
+    size_t target_len = strlen(target);
 
     if (!strncmp(*token, target, target_len))
     {

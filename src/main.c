@@ -2,6 +2,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "uib_structs.h"
+#include "uidl_application.h"
+#include "uidlc.h"
 
 const char *helpmsg = "uidlc - the uidl bytecode compiler\n"
     "usage:\nuidlc [-h] [-o <outfile>] <infile>\n";
@@ -39,7 +42,7 @@ main (
     if (optind >= argc)
     {
         fputs("error: missing input file\n", stderr);
-        return 1;
+        exit(1);
     }
 
     input_filename = argv[optind++];
@@ -47,15 +50,48 @@ main (
     if (optind < argc)
     {
         fputs("error: too many arguments\n", stderr);
-        return 1;
+        exit(1);
     }
 
-    FILE *infile = fopen(input_filename, "w");
+    FILE *infile = fopen(input_filename, "r");
     
     if (!infile)
     {
-        fputs("error: input file not found", stderr);
-        return 1;
+        fprintf(stderr, "error: input file \"%s\" not found\n", input_filename);
+        exit(1);
+    }
+
+    fseek(infile, 0L, SEEK_END);
+    int infilesize = ftell(infile);
+    rewind(infile);
+    char *infile_text = calloc(infilesize, sizeof(char));
+    fread(infile_text, sizeof(char), infilesize, infile);
+    fclose(infile);
+
+    char *token = infile_text;
+    uib_application_struct_t *application;
+
+    uidlc_return_t status = uidl_parse_application_struct(&token, &application);
+
+    switch (status)
+    {
+        case UIDLC_SUCCESS:
+        break;
+
+        case UIDLC_ERROR:
+        fputs("error parsing input: UIDLC_ERROR\n", stderr);
+        exit(1);
+        break;
+
+        case UIDLC_ERROR_ALLOCATION_FAILED:
+        fputs("error parsing input: UIDLC_ERROR_ALLOCATION_FAILED\n", stderr);
+        exit(1);
+        break;
+
+        case UIDLC_ERROR_MISSING_ELEMENT:
+        fputs("error parsing input: UIDLC_ERROR_MISSING_ELEMENT\n", stderr);
+        exit(1);
+        break;
     }
 
 
@@ -63,5 +99,5 @@ main (
 
 
 
-
+    return 0;
 }

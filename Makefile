@@ -1,5 +1,5 @@
 CC     := gcc
-CFLAGS := -I../../include -O -Wall -Wextra -Wno-unused-parameter -c
+CFLAGS := -I../../include -O -Wall -Wextra -Wno-unused-parameter -c -g
 
 OUTPUT := build/uidlc
 SRCS   := $(shell find src -name '*.c')
