@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "uib_canvas.h"
 #include "uib_scalars.h"
 #include "uib_widget.h"
@@ -50,6 +51,8 @@ uib_output_canvas (
         return UIDLC_ERROR_OUTPUT_FAILED;
     }
 
+
+
     return UIDLC_SUCCESS;
 }
 
@@ -66,6 +69,8 @@ uib_output_canvas_array (
             return UIDLC_ERROR_OUTPUT_FAILED;
         }
     }
+
+    free(application->canvas);
 
     return UIDLC_SUCCESS;
 }

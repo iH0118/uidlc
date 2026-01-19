@@ -1,6 +1,7 @@
 #include "uib_application.h"
 #include "uib_scalars.h"
 #include "uib_canvas.h"
+#include <stdlib.h>
 
 uidlc_return_t
 uib_output_application_struct (
@@ -77,6 +78,8 @@ uib_output_application_struct (
     {
         return UIDLC_ERROR_OUTPUT_FAILED;
     }
+
+    free(application);
 
     return UIDLC_SUCCESS;
 }

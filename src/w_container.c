@@ -197,5 +197,7 @@ uib_output_w_container (
         return UIDLC_ERROR_OUTPUT_FAILED;
     }
 
+    free(widget->data.container.child);
+
     return UIDLC_SUCCESS;
 }

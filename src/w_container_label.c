@@ -140,5 +140,7 @@ uib_output_w_container_label (
         return UIDLC_ERROR_OUTPUT_FAILED;
     }
 
+    free(widget->data.container_label.child);
+
     return UIDLC_SUCCESS;
 }

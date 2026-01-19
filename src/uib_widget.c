@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <ultk/ultk_uidl_uib.h>
 #include "uib_widget.h"
 #include "uib_scalars.h"
@@ -90,6 +91,8 @@ uib_output_widget_array (
             return UIDLC_ERROR_OUTPUT_FAILED;
         }
     }
+
+    free(widgets);
 
     return UIDLC_SUCCESS;
 }

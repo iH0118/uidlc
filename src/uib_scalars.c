@@ -1,7 +1,5 @@
+#include <stdlib.h>
 #include "uib_scalars.h"
-    #include "uidlc.h"
-#include <stdint.h>
-    #include <stdio.h>
 
 uidlc_return_t
 uib_output_bool (
@@ -98,6 +96,8 @@ uib_output_string (
     {
         return UIDLC_ERROR_OUTPUT_FAILED;
     }
+    
+    free(target);
 
     return UIDLC_SUCCESS;
 }
