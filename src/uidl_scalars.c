@@ -30,32 +30,6 @@ uidl_parse_bool (
 }
 
 uidlc_return_t
-uidl_parse_int (
-    char **token,
-    int *target
-)
-{
-    int len = strcspn(*token, " \f\n\r\t\v,#}]");
-    char *buf = malloc(len + 1);
-
-    if (!buf)
-    {
-        return UIDLC_ERROR_ALLOCATION_FAILED;
-    }
-
-    strncpy(buf, *token, len);
-    buf[len] = '\0';
-
-    *target = atoi(buf);
-
-    free(buf);
-
-    *token = uidl_parser_skip(*token + len);
-
-    return UIDLC_SUCCESS;
-}
-
-uidlc_return_t
 uidl_parse_uint8 (
     char **token,
     uint8_t *target

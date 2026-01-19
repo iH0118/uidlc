@@ -1,7 +1,10 @@
+#include <stdint.h>
 #include <stdlib.h>
 #include <ultk/ultk_uidl_uib.h>
 #include "w_array_dynamic.h"
+#include "uib_scalars.h"
 #include "uib_structs.h"
+#include "uib_widget.h"
 #include "uidl_parser.h"
 #include "uidl_scalars.h"
 #include "uidl_widget.h"
@@ -57,8 +60,8 @@ uidl_parse_w_array_dynamic (
         if (uidl_cond_adv_col(token, "keep_grid"))
         {
             status = uidl_parse_bool(
-                token,  
-                &widget->data.array_dynamic.keep_grid  
+                token,
+                &widget->data.array_dynamic.keep_grid
             );
         }
 
@@ -74,14 +77,14 @@ uidl_parse_w_array_dynamic (
         {
             status = uidl_parse_uint8(
                 token,
-                &widget->data.array_dynamic.max_reflow_sections  
+                &widget->data.array_dynamic.max_reflow_sections
             );
         }
 
         if (uidl_cond_adv_col(token, "w_children"))
         {
             status = uidl_parse_widget_array(
-                token, 
+                token,
                 &widget->data.array_static.children,
                 &widget->data.array_static.num_children
             );
@@ -109,6 +112,53 @@ uidl_parse_w_array_dynamic (
         widget->data.array_dynamic.children == NULL)
     {
         return UIDLC_ERROR_MISSING_ELEMENT;
+    }
+
+    widget->widget_size += 2 * sizeof(enum8_t) + sizeof(_Bool) +
+        sizeof(uint8_t) + sizeof(uint16_t);
+
+    for (int i = 0; i < widget->data.array_dynamic.num_children; i++)
+    {
+        widget->widget_size +=
+            widget->data.array_dynamic.children[i].widget_size;
+    }
+
+    return UIDLC_SUCCESS;
+}
+
+uidlc_return_t
+uib_output_w_array_dynamic (
+    FILE *stream,
+    uib_widget_struct_t *widget
+)
+{
+    if (uib_output_enum8(
+            stream,
+            widget->data.array_dynamic.alignment
+        ) != UIDLC_SUCCESS ||
+        uib_output_bool(
+            stream,
+            widget->data.array_dynamic.keep_grid
+        ) != UIDLC_SUCCESS ||
+        uib_output_enum8(
+            stream,
+            widget->data.array_dynamic.reflow_direction
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint8(
+            stream,
+            widget->data.array_dynamic.max_reflow_sections
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint16(
+            stream,
+            widget->data.array_dynamic.num_children
+        ) != UIDLC_SUCCESS ||
+        uib_output_widget_array(
+            stream,
+            widget->data.array_dynamic.children,
+            widget->data.array_dynamic.num_children
+        ) != UIDLC_SUCCESS)
+    {
+        return UIDLC_ERROR_OUTPUT_FAILED;
     }
 
     return UIDLC_SUCCESS;

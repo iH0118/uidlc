@@ -1,6 +1,9 @@
+#include <stdint.h>
 #include <stdlib.h>
 #include "w_container.h"
+#include "uib_scalars.h"
 #include "uib_structs.h"
+#include "uib_widget.h"
 #include "uidl_parser.h"
 #include "uidl_scalars.h"
 #include "uidl_widget.h"
@@ -140,6 +143,58 @@ uidl_parse_w_container (
         }
 
         uidlc_syntax_error(*token);
+    }
+
+    widget->widget_size += 4 * sizeof(float) + 4 * sizeof(uint16_t) +
+        widget->data.container.child->widget_size;
+
+    return UIDLC_SUCCESS;
+}
+
+uidlc_return_t
+uib_output_w_container (
+    FILE *stream,
+    uib_widget_struct_t *widget
+)
+{
+    if (uib_output_float(
+        stream, 
+        widget->data.container.padding_relative.l
+    ) != UIDLC_SUCCESS ||
+    uib_output_float(
+        stream, 
+        widget->data.container.padding_relative.r
+    ) != UIDLC_SUCCESS ||
+    uib_output_float(
+        stream, 
+        widget->data.container.padding_relative.t
+    ) != UIDLC_SUCCESS ||
+    uib_output_float(
+        stream, 
+        widget->data.container.padding_relative.b
+    ) != UIDLC_SUCCESS ||
+    uib_output_uint16(
+        stream, 
+        widget->data.container.padding_absolute.l
+    ) != UIDLC_SUCCESS ||
+    uib_output_uint16(
+        stream, 
+        widget->data.container.padding_absolute.r
+    ) != UIDLC_SUCCESS ||
+    uib_output_uint16(
+        stream, 
+        widget->data.container.padding_absolute.t
+    ) != UIDLC_SUCCESS ||
+    uib_output_uint16(
+        stream, 
+        widget->data.container.padding_absolute.b
+    ) != UIDLC_SUCCESS ||
+    uib_output_widget(
+        stream, 
+        widget->data.container.child
+    ) != UIDLC_SUCCESS)
+    {
+        return UIDLC_ERROR_OUTPUT_FAILED;
     }
 
     return UIDLC_SUCCESS;

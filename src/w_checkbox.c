@@ -1,5 +1,7 @@
+#include <stdint.h>
 #include <stdlib.h>
 #include "w_checkbox.h"
+#include "uib_scalars.h"
 #include "uidl_parser.h"
 #include "uidl_scalars.h"
 #include "uidlc.h"
@@ -93,6 +95,55 @@ uidl_parse_w_checkbox (
         }
 
         uidlc_syntax_error(*token);
+    }
+
+    widget->widget_size += sizeof(_Bool) + 3 * sizeof(uint16_t) +
+        widget->data.checkbox.label_size +
+        widget->data.checkbox.callback_id_check_size +
+        widget->data.checkbox.callback_id_uncheck_size;
+
+    return UIDLC_SUCCESS;
+}
+
+uidlc_return_t
+uib_output_w_checkbox (
+    FILE *stream,
+    uib_widget_struct_t *widget
+)
+{
+    if (uib_output_uint16(
+            stream,
+            widget->data.checkbox.label_size
+        ) != UIDLC_SUCCESS ||
+        uib_output_string(
+            stream,
+            widget->data.checkbox.label,
+            widget->data.checkbox.label_size
+        ) != UIDLC_SUCCESS ||
+        uib_output_bool(
+            stream,
+            widget->data.checkbox.checked
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint16(
+            stream,
+            widget->data.checkbox.callback_id_check_size
+        ) != UIDLC_SUCCESS ||
+        uib_output_string(
+            stream,
+            widget->data.checkbox.callback_id_check,
+            widget->data.checkbox.callback_id_check_size
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint16(
+            stream,
+            widget->data.checkbox.callback_id_uncheck_size
+        ) != UIDLC_SUCCESS ||
+        uib_output_string(
+            stream,
+            widget->data.checkbox.callback_id_uncheck,
+            widget->data.checkbox.callback_id_uncheck_size
+        ) != UIDLC_SUCCESS)
+    {
+        return UIDLC_ERROR_OUTPUT_FAILED;
     }
 
     return UIDLC_SUCCESS;

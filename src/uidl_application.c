@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdlib.h>
 #include "uidl_application.h"
 #include "uidl_parser.h"
@@ -12,12 +13,12 @@ uidl_parse_metadata (
 )
 {
     uidlc_return_t status;
-    
+
     if (!uidl_conditional_advance(token, "{"))
     {
         uidlc_syntax_error(*token);
     }
-    
+
     while (1)
     {
         if (uidl_cond_adv_col(token, "name"))
@@ -92,6 +93,11 @@ uidl_parse_metadata (
         uidlc_syntax_error(*token);
     }
 
+    application->application_size += 6 * sizeof(uint16_t) +
+        application->meta_name_size + application->meta_version_size +
+        application->meta_id_size + application->meta_creator_size +
+        application->meta_copyright_size + application->meta_url_size;
+
     return UIDLC_SUCCESS;
 }
 
@@ -104,16 +110,18 @@ uidl_parse_application_struct (
     uidlc_return_t status = UIDLC_ERROR;
 
     *application = calloc(1, sizeof(uib_application_struct_t));
-    if (!*application) 
+    if (!*application)
     {
         return UIDLC_ERROR_ALLOCATION_FAILED;
     }
 
-    if (!uidl_cond_adv_col(token, "application") || 
+    if (!uidl_cond_adv_col(token, "application") ||
         !uidl_conditional_advance(token, "{"))
     {
         uidlc_syntax_error(*token);
     }
+
+    (*application)->application_size = sizeof(uint32_t) + sizeof(uint16_t);
 
     while (1)
     {

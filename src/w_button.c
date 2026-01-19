@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <ultk/ultk_uidl_uib.h>
 #include "w_button.h"
+#include "uib_scalars.h"
 #include "uidl_parser.h"
 #include "uidl_scalars.h"
 #include "uidlc.h"
@@ -58,7 +59,7 @@ uidl_parse_w_button (
         if (uidl_cond_adv_col(token, "label_align_x"))
         {
             status = uidl_parse_enum_text_alignment_x(
-                token, 
+                token,
                 &widget->data.button.label_align_x
             );
         }
@@ -66,7 +67,7 @@ uidl_parse_w_button (
         if (uidl_cond_adv_col(token, "label_align_y"))
         {
             status = uidl_parse_enum_text_alignment_y(
-                token, 
+                token,
                 &widget->data.button.label_align_y
             );
         }
@@ -102,12 +103,12 @@ uidl_parse_w_button (
                 &widget->data.button.size_max_y
             );
         }
-        
+
         if (uidl_cond_adv_col(token, "callback_id_press"))
         {
             status = uidl_parse_string(
-                token, 
-                &widget->data.button.callback_id_press, 
+                token,
+                &widget->data.button.callback_id_press,
                 &widget->data.button.callback_id_press_size
             );
         }
@@ -128,6 +129,65 @@ uidl_parse_w_button (
         }
 
         uidlc_syntax_error(*token);
+    }
+
+    widget->widget_size += 6 * sizeof(uint16_t) + 2 * sizeof(enum8_t) +
+        widget->data.button.label_size +
+        widget->data.button.callback_id_press_size;
+
+    return UIDLC_SUCCESS;
+}
+
+uidlc_return_t
+uib_output_w_button (
+    FILE *stream,
+    uib_widget_struct_t *widget
+)
+{
+    if (uib_output_uint16(
+            stream,
+            widget->data.button.label_size
+        ) != UIDLC_SUCCESS ||
+        uib_output_string(
+            stream,
+            widget->data.button.label,
+            widget->data.button.label_size
+        ) != UIDLC_SUCCESS ||
+        uib_output_enum8(
+            stream, 
+            widget->data.button.label_align_x
+        ) != UIDLC_SUCCESS ||
+        uib_output_enum8(
+            stream, 
+            widget->data.button.label_align_y
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint16(
+            stream, 
+            widget->data.button.size_min_x
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint16(
+            stream, 
+            widget->data.button.size_min_y
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint16(
+            stream, 
+            widget->data.button.size_max_x
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint16(
+            stream, 
+            widget->data.button.size_max_y
+        ) != UIDLC_SUCCESS ||
+        uib_output_uint16(
+            stream,
+            widget->data.button.callback_id_press_size
+        ) != UIDLC_SUCCESS ||
+        uib_output_string(
+            stream,
+            widget->data.button.callback_id_press,
+            widget->data.button.callback_id_press_size
+        ) != UIDLC_SUCCESS)
+    {
+        return UIDLC_ERROR_OUTPUT_FAILED;
     }
 
     return UIDLC_SUCCESS;

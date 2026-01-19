@@ -10,12 +10,6 @@ uidl_parse_bool (
 );
 
 uidlc_return_t
-uidl_parse_int (
-    char **token,
-    int *target
-);
-
-uidlc_return_t
 uidl_parse_uint8 (
     char **token,
     uint8_t *target

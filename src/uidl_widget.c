@@ -1,7 +1,9 @@
+#include <stdint.h>
 #include <stdlib.h>
 #include <ultk/ultk_uidl_uib.h>
 #include "uidl_widget.h"
 #include "uidl_parser.h"
+#include "uidlc.h"
 #include "w_array_static.h"
 #include "w_array_dynamic.h"
 #include "w_button.h"
@@ -16,6 +18,8 @@ uidl_parse_widget (
 )
 {
     uidlc_return_t status = UIDLC_ERROR;
+
+    widget->widget_size = 0;
 
     widget->widget_type = ULTK_WIDGET_NULL;
     widget->id_size = 0;
@@ -74,12 +78,17 @@ uidl_parse_widget (
         return status;
     }
 
-    if (widget->widget_type == ULTK_WIDGET_NULL &&
-        widget->id_size == 0 &&
-        widget->id == NULL)
+    if (widget->widget_type == ULTK_WIDGET_NULL || (
+            (widget->id_size == 0 || widget->id == NULL) &&
+            widget->widget_type != ULTK_WIDGET_VOID
+        ))
     {
         return UIDLC_ERROR_MISSING_ELEMENT;
     }
+
+    widget->widget_size += sizeof(uint32_t) + sizeof(enum8_t) +
+        (widget->widget_type == ULTK_WIDGET_VOID ? 0 :
+        (sizeof(uint16_t) + widget->id_size));
 
     return UIDLC_SUCCESS;
 }

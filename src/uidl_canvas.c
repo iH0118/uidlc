@@ -1,9 +1,11 @@
+#include <stdint.h>
 #include <stdlib.h>
 #include <ultk/ultk_uidl_uib.h>
 #include "uidl_canvas.h"
 #include "uidl_parser.h"
 #include "uidl_scalars.h"
 #include "uidl_widget.h"
+#include "uidlc.h"
 
 
 uidlc_return_t
@@ -19,7 +21,7 @@ uidl_parse_canvas (
     canvas->id_size = 0;
     canvas->id = NULL;
     canvas->w_top = NULL;
-    
+
     /* optional elements */
     canvas->title_size = 0;
     canvas->title = NULL;
@@ -124,6 +126,10 @@ uidl_parse_canvas (
         return UIDLC_ERROR_MISSING_ELEMENT;
     }
 
+    canvas->canvas_size = sizeof(uint32_t) + 4 * sizeof(uint16_t) +
+        sizeof(enum8_t) + canvas->id_size + canvas->title_size +
+        canvas->w_top->widget_size;
+
     return UIDLC_SUCCESS;
 }
 
@@ -161,6 +167,9 @@ uidl_parse_canvas_array (
             token,
             &application->canvas[application->num_canvas - 1]
         );
+
+        application->application_size += 
+            application->canvas[application->num_canvas - 1].canvas_size;
 
         if (status != UIDLC_SUCCESS)
         {
