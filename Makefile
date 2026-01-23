@@ -1,9 +1,10 @@
-CC     := gcc
-CFLAGS := -I../../include -O -Wall -Wextra -Wno-unused-parameter -c -g
+CC      := gcc
+CFLAGS  := -I../../include -O -Wall -Wextra -Wno-unused-parameter -c -g
+LDFLAGS :=
 
-OUTPUT := build/uidlc
-SRCS   := $(shell find src -name '*.c')
-OBJS   := $(patsubst src/%.c,build/%.o,$(SRCS))
+OUTPUT  := build/uidlc
+SRCS    := $(shell find src -name '*.c')
+OBJS    := $(patsubst src/%.c,build/%.o,$(SRCS))
 
 build: $(OUTPUT)
 
@@ -14,10 +15,10 @@ clean_all: clean
 	rm -f $(OUTPUT)
 
 $(OUTPUT): $(OBJS) 
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) $(LDFLAGS) $^ -o $@
 
 build/%.o: src/%.c
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $< -o $@
 
 src/%.c: src/%.h src/uib_structs.h
 
